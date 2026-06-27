@@ -13,7 +13,6 @@ import gg.flyte.pluginportal.common.types.enums.MarketplacePlatform
 import gg.flyte.pluginportal.common.util.ActionResponseComponent
 import gg.flyte.pluginportal.common.util.ActionResponseString
 import gg.flyte.pluginportal.common.util.async
-import gg.flyte.pluginportal.plugin.commands.lamp.RequiresAuth
 import net.kyori.adventure.audience.Audience
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.Component.text
@@ -30,7 +29,6 @@ class UpdateAllSubCommand {
     private fun String.plural(num: Int, suffix: String = "s") = this + (if (num == 1) "" else suffix)
     private fun String.plural(list: Collection<*>, suffix: String = "s") = plural(list.size, suffix)
 
-    @RequiresAuth
     @EnabledCommand(Features.UPDATE)
     @Subcommand("updateAll")
     @CommandPermission("pluginportal.maintain.update")

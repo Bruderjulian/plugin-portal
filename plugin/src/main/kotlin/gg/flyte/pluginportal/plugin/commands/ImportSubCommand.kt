@@ -15,7 +15,6 @@ import gg.flyte.pluginportal.common.types.enums.MarketplacePlatform
 import gg.flyte.pluginportal.common.util.GSON
 import gg.flyte.pluginportal.common.util.SharedComponents
 import gg.flyte.pluginportal.common.util.async
-import gg.flyte.pluginportal.plugin.commands.lamp.RequiresAuth
 import net.kyori.adventure.audience.Audience
 import net.kyori.adventure.text.Component.newline
 import net.kyori.adventure.text.Component.text
@@ -30,7 +29,6 @@ import revxrsal.commands.bukkit.annotation.CommandPermission
 @Command("pp", "pluginportal", "ppm")
 class ImportSubCommand {
 
-    @RequiresAuth
     @EnabledCommand(Features.IMPORT)
     @Subcommand("import")
     @CommandPermission("pluginportal.manage.import")

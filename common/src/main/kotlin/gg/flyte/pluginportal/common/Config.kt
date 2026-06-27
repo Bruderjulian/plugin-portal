@@ -213,9 +213,6 @@ object Config {
     fun getDiscordWebhookUrl(): String? =
         getString(DISCORD_WEBHOOK_URL_PATH)?.trim()?.takeIf { it.isNotEmpty() }
 
-    fun isTelemetryEnabled(): Boolean =
-        initialized && plugin.config.getBoolean(TELEMETRY_ENABLED_PATH, true)
-
     /**
      * Reloads all configuration from disk
      */
@@ -224,36 +221,6 @@ object Config {
         initDiscordWebhook(plugin)
         initPrivacyDefaults(plugin)
         initFeatures(plugin)
-    }
-
-    // Authentication key management
-    
-    /**
-     * Sets the API key (any valid authentication key)
-     */
-    fun setApiKey(key: String): Boolean {
-        return if (key.isNotEmpty()) {
-            plugin.config.set("Authentication.ApiKey", key)
-            plugin.saveConfig()
-            true
-        } else {
-            false
-        }
-    }
-    
-    /**
-     * Gets the API key
-     */
-    fun getApiKey(): String? {
-        return plugin.config.getString("Authentication.ApiKey")
-    }
-    
-    /**
-     * Removes the authentication key
-     */
-    fun clearAuthenticationKey() {
-        plugin.config.set("Authentication", null)
-        plugin.saveConfig()
     }
 
 }

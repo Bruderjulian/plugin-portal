@@ -1,6 +1,5 @@
 package gg.flyte.pluginportal.common.util
 
-import gg.flyte.pluginportal.common.AuthCreds
 import gg.flyte.pluginportal.common.Config
 import gg.flyte.pluginportal.common.Constants
 import gg.flyte.pluginportal.common.PluginPortalBase
@@ -120,17 +119,12 @@ fun Plugin.download(
     return newPlugin
 }
 
-fun download(url: URL, destination: File, audience: Audience?, authCreds: AuthCreds? = null): File? = runCatching {
+fun download(url: URL, destination: File, audience: Audience?): File? = runCatching {
     val connection = url.openConnection().apply {
         connectTimeout = 15_000
         readTimeout = 60_000
         // Use a more specific User-Agent for Polymart compatibility
         setRequestProperty("User-Agent", "PluginPortal/1.0")
-        val apiKey = authCreds?.mclKey?.trim()?.takeIf { it.isNotEmpty() }
-        if (apiKey != null && (url.host == "localhost" || url.host == "pluginportal.link" || url.host.endsWith(".pluginportal.link"))) {
-            setRequestProperty("x-api-key", apiKey)
-            setRequestProperty("Authorization", "Bearer $apiKey")
-        }
         // Handle redirects
         if (this is HttpURLConnection) {
             instanceFollowRedirects = true

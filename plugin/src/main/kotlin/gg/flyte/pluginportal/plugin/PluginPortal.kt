@@ -23,21 +23,11 @@ class PluginPortal : JavaPlugin() {
         lateinit var pluginPortalJarFile: File
     }
 
-    private lateinit var entitlementManager: EntitlementManager
-
     override fun onEnable() {
         instance = this
         pluginPortalJarFile = this.file
 
         Config.init(this)
-        entitlementManager = EntitlementManager(this)
-        
-        entitlementManager.loadConfiguredKey()
-        entitlementManager.refresh()
-
-        if (!isAuthed()) {
-            logger.info("Premium features are locked until a valid Plugin Portal key is configured.")
-        }
 
         val commands: Array<Any> = arrayOf(
             ImportSubCommand(),
@@ -53,8 +43,6 @@ class PluginPortal : JavaPlugin() {
             this,
             PluginPortalBase.PluginPortalInfo(
                 pluginJarFile = pluginPortalJarFile,
-                hasPremiumEntitlement = { isAuthed() },
-                refreshPremiumEntitlement = { refreshEntitlement() },
             ),
             commands
         ) {
@@ -65,13 +53,6 @@ class PluginPortal : JavaPlugin() {
 
         AdapterPluginCache.load()
     }
-
-    fun refreshEntitlement() = entitlementManager.refresh() is EntitlementState.Valid
-
-    fun isAuthed() = entitlementManager.hasPremiumAccess()
-
-    fun lockedPremiumMessage() = entitlementManager.lockedMessage()
-
     override fun onDisable() {
         TypedSocketManager.stop()
         PluginPortalBase.onDisable()

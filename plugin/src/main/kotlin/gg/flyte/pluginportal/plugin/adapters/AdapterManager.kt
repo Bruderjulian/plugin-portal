@@ -59,9 +59,7 @@ object AdapterManager {
             )
         }
 
-        if (PluginPortal.instance.isAuthed()) {
-            downloadAdapters()
-        }
+        downloadAdapters()
     }
 
     private fun downloadAdapters() {

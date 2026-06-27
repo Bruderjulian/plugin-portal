@@ -7,8 +7,8 @@ tasks {
     shadowJar {
         val channel: String? = project.findProperty("channel") as? String
 
-        val version = pluginVersion(project.version as String)
-        val name = getJarName()
+        val version = project.version as String
+        val name = "PluginPortal"
         
         // Add channel suffix if specified
         val fullVersion = if (channel != null && channel != "stable") {

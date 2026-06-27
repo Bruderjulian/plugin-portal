@@ -16,7 +16,6 @@ import gg.flyte.pluginportal.common.util.async
 import gg.flyte.pluginportal.common.util.isJarFile
 import gg.flyte.pluginportal.common.util.isPluginPortal
 import gg.flyte.pluginportal.plugin.PluginPortal
-import gg.flyte.pluginportal.plugin.commands.lamp.RequiresAuth
 import net.kyori.adventure.audience.Audience
 import net.kyori.adventure.text.Component.text
 import net.kyori.adventure.text.format.NamedTextColor
@@ -37,7 +36,6 @@ class RecognizeAllSubCommand {
 
     private val File.hash: Hash get() = Hash(HashType.SHA256.hash(this), HashType.SHA512.hash(this))
 
-    @RequiresAuth
     @EnabledCommand(Features.RECOGNISE)
     @Subcommand("recognizeAll")
     @CommandPermission("pluginportal.manage.recognize")

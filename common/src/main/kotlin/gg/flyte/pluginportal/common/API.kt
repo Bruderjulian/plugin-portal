@@ -19,10 +19,6 @@ import java.io.File
 import java.net.URL
 import java.net.URI
 
-data class AuthCreds(
-    val mclKey: String, val serverIp: String
-)
-
 // ORPC Response Types (minimal, focused on what the plugin needs)
 private data class ORPCVersionsResponse(val versions: List<ORPCVersionInfo>)
 private data class ORPCVersionInfo(val version: String, val fullVersion: String, val channel: String, val stable: Boolean, val filename: String)
@@ -38,12 +34,8 @@ data class Hash(val sha256: String, val sha512: String)
 
 object API {
     private val client = OkHttpClient().newBuilder().build()
-    private var authKey: String? = null
     private data class ApiResponse(val body: String, val code: Int)
 
-    fun enableAuthenticatedClient(mclKey: String? = null) {
-        authKey = mclKey?.trim()?.takeIf { it.isNotEmpty() }
-    }
 
     fun closeClient() {
         client.dispatcher.executorService.shutdown()
@@ -54,8 +46,7 @@ object API {
     private fun orpcCall(
         endpoint: String,
         params: Map<String, String> = emptyMap(),
-        body: String? = null,
-        overrideAuth: String? = null
+        body: String? = null
     ): ApiResponse {
         val baseUrl = URI(HttpInfo.getApiBaseUrl()).toURL()
         val url = HttpUrl.Builder()
@@ -75,10 +66,6 @@ object API {
         return try {
             val requestBuilder = Request.Builder().url(url).apply {
                 body?.let { post(it.toRequestBody("application/json".toMediaType())) }
-                (overrideAuth ?: authKey)?.let {
-                    header("Authorization", "Bearer $it")
-                    if (overrideAuth == null) header("x-api-key", it)
-                }
             }
 
             client.newCall(requestBuilder.build()).execute().use { response ->
@@ -160,70 +147,10 @@ object API {
         val url = URL("${HttpInfo.getApiBaseUrl()}/versions/$newVersion/$channel/download?type=free")
 
         val to = File(Constants.UPDATE_DIRECTORY, PluginPortalBase.info.getJarName(newVersion))
-        val creds = authKey?.let { AuthCreds(mclKey = it, serverIp = "") }
         val result = download(url, to, null, creds)
         return result != null
     }
 
-    fun recordPluginPortalStartup(
-        serverId: String,
-        licenseKeyHash: String?,
-        licenseKeyMasked: String?,
-        version: String,
-        serverVersion: String?,
-        minecraftVersion: String?,
-        managedPluginCount: Int,
-        pluginPortalUpdateSuccessCount: Int,
-        pluginPortalUpdateFailureCount: Int,
-        managedPluginUpdateFailureCount: Int
-    ) {
-        val body = GSON.toJson(mapOf(
-            "serverId" to serverId,
-            "licenseKeyHash" to licenseKeyHash,
-            "licenseKeyMasked" to licenseKeyMasked,
-            "version" to version,
-            "pluginType" to "free",
-            "serverVersion" to serverVersion,
-            "minecraftVersion" to minecraftVersion,
-            "managedPluginCount" to managedPluginCount,
-            "pluginPortalUpdateSuccessCount" to pluginPortalUpdateSuccessCount,
-            "pluginPortalUpdateFailureCount" to pluginPortalUpdateFailureCount,
-            "managedPluginUpdateFailureCount" to managedPluginUpdateFailureCount,
-        ))
-        val response = orpcCall("/versions/telemetry/startup", body = body)
-        if (!response.isSuccessful()) logRequestFailure("Release startup telemetry", response)
-    }
-
-    fun recordPluginPortalUpdateQueued(
-        serverId: String,
-        licenseKeyHash: String?,
-        licenseKeyMasked: String?,
-        currentVersion: String,
-        targetVersion: String,
-        serverVersion: String?,
-        minecraftVersion: String?,
-        managedPluginCount: Int,
-        pluginPortalUpdateSuccessCount: Int,
-        pluginPortalUpdateFailureCount: Int,
-        managedPluginUpdateFailureCount: Int
-    ) {
-        val body = GSON.toJson(mapOf(
-            "serverId" to serverId,
-            "licenseKeyHash" to licenseKeyHash,
-            "licenseKeyMasked" to licenseKeyMasked,
-            "currentVersion" to currentVersion,
-            "targetVersion" to targetVersion,
-            "pluginType" to "free",
-            "serverVersion" to serverVersion,
-            "minecraftVersion" to minecraftVersion,
-            "managedPluginCount" to managedPluginCount,
-            "pluginPortalUpdateSuccessCount" to pluginPortalUpdateSuccessCount,
-            "pluginPortalUpdateFailureCount" to pluginPortalUpdateFailureCount,
-            "managedPluginUpdateFailureCount" to managedPluginUpdateFailureCount,
-        ))
-        val response = orpcCall("/versions/telemetry/update-queued", body = body)
-        if (!response.isSuccessful()) logRequestFailure("Release update telemetry", response)
-    }
     /*
 
 //                UpdateCheckResponse(
@@ -444,20 +371,6 @@ object API {
         }
     }
 
-    fun registerServer(metadata: MCServerMetadata, accessToken: String): RegisterServerResponse? {
-        val response = orpcCall("/servers/register", body = GSON.toJson(mapOf("body" to metadata)), overrideAuth = accessToken)
-
-        return if (response.isSuccessful()) {
-            runCatching {
-                GSON.fromJson(response.body, RegisterServerResponse::class.java)
-            }.onFailure {
-                logParseFailure("Server registration", it)
-            }.getOrNull()
-        } else {
-            logRequestFailure("Server registration", response, authSensitive = true)
-            null
-        }
-    }
     // Exception classes for backward compatibility
     private class AuthorisationException(val statusCode: Int) : RuntimeException(
         "The request was rejected by the remote server with status code $statusCode. You may need to authenticate."
@@ -525,12 +438,6 @@ data class DeviceTokenResponse(
     val token_type: String,
     val expires_in: Int,
     val scope: String?
-)
-
-data class RegisterServerResponse(
-    val serverId: String,
-    val apiKey: String,
-    val websocketUrl: String
 )
 
 // Additional types for backward compatibility

@@ -7,9 +7,9 @@ repositories {
 }
 
 java {
-    javaTarget(17)
+    toolchain.languageVersion.set(JavaLanguageVersion.of(25))
 }
 
 kotlin {
-    jvmToolchain(17)
+    jvmToolchain(25)
 }

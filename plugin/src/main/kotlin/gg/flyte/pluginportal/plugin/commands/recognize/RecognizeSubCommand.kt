@@ -18,7 +18,6 @@ import gg.flyte.pluginportal.common.util.async
 import gg.flyte.pluginportal.common.util.isPluginPortal
 import gg.flyte.pluginportal.plugin.PluginPortal
 import gg.flyte.pluginportal.plugin.commands.lamp.PluginJarFilesUnrecognisedSP
-import gg.flyte.pluginportal.plugin.commands.lamp.RequiresAuth
 import gg.flyte.pluginportal.plugin.commands.lamp.SafeFileName
 import net.kyori.adventure.audience.Audience
 import revxrsal.commands.annotation.Command
@@ -33,7 +32,6 @@ class RecognizeSubCommand {
 
     private val logger get() = PluginPortal.instance.logger
 
-    @RequiresAuth
     @EnabledCommand(Features.RECOGNISE)
     @Subcommand("recognize")
     @CommandPermission("pluginportal.manage.recognize")

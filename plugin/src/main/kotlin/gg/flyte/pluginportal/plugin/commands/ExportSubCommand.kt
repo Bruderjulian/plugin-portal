@@ -10,7 +10,6 @@ import gg.flyte.pluginportal.common.commands.lamp.Features
 import gg.flyte.pluginportal.common.logging.Paste
 import gg.flyte.pluginportal.common.managers.LocalPluginCache
 import gg.flyte.pluginportal.common.util.GSON
-import gg.flyte.pluginportal.plugin.commands.lamp.RequiresAuth
 import net.kyori.adventure.audience.Audience
 import net.kyori.adventure.text.event.ClickEvent
 import revxrsal.commands.annotation.Command
@@ -20,7 +19,6 @@ import revxrsal.commands.bukkit.annotation.CommandPermission
 @Command("pp", "pluginportal", "ppm")
 class ExportSubCommand {
 
-    @RequiresAuth
     @EnabledCommand(Features.EXPORT)
     @Subcommand("export")
     @CommandPermission("pluginportal.manage.export")

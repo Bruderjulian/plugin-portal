@@ -143,7 +143,6 @@ object LocalPluginCache : PluginCache<LocalPlugin>() {
         val marketplacePlugin: Plugin = marketplacePlugin
             ?: MarketplacePluginCache.getCachedPluginById(platform, platformId)
             ?: return run { // They possibly manually changed ID or our database down?
-                ServerTelemetryManager.recordManagedPluginUpdateFailed()
                 PortalLogger.log(initiator, PortalLogger.Action.FAILED_UPDATE, target)
                 ActionResponseString(false, "Could not find plugin in marketplace ($target)")
             }
@@ -176,7 +175,6 @@ object LocalPluginCache : PluginCache<LocalPlugin>() {
             )
             return ActionResponseString<LocalPlugin>(true, null, newPlugin)
         } else {
-            ServerTelemetryManager.recordManagedPluginUpdateFailed()
             PortalLogger.log(initiator, PortalLogger.Action.FAILED_UPDATE, target)
             return ActionResponseString<LocalPlugin>(false, "Plugin failed to update", null)
         }

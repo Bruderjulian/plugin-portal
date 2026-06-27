@@ -38,20 +38,6 @@ class LampExceptionHandler(private val audiences: BukkitAudiences): BukkitExcept
         actor.audience.sendFailure("${ex.feature} plugins is disabled in config.")
     }
 
-    class UnauthenticatedException: CommandErrorException()
-
-    @HandleException
-    fun handleAuthRequiredCommandException(ex: UnauthenticatedException, actor: BukkitCommandActor) {
-        val message = runCatching {
-            val pluginClass = Class.forName("gg.flyte.pluginportal.plugin.PluginPortal")
-            val instance = pluginClass.getField("instance").get(null)
-            pluginClass.getMethod("lockedPremiumMessage").invoke(instance) as? String
-        }.getOrNull()
-
-        if (message != null) actor.audience.sendFailure(message)
-        else actor.audience.sendUnAuthed()
-    }
-
     override fun onEnumNotFound(ex: EnumNotFoundException, actor: BukkitCommandActor) {
         actor.audience.sendFailure("${ex.input()} is not recognised}")  // Generic because they removed parameters
     }
