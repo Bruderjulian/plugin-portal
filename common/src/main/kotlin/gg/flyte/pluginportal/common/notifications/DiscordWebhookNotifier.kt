@@ -94,7 +94,7 @@ object DiscordWebhookNotifier {
             fields = listOf(
                 "Version" to "$previousVersion -> $currentVersion",
                 "Artifact" to "PluginPortal",
-                "Premium" to if (PluginPortalBase.info.hasPremiumEntitlement()) "Unlocked" else "Locked",
+                "Premium" to "Unlocked",
                 "Mode" to if (automatic) "Automatic" else "Manual",
             ).withOptional("Release notes", releaseNotes)
         )

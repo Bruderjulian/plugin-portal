@@ -147,7 +147,7 @@ object API {
         val url = URL("${HttpInfo.getApiBaseUrl()}/versions/$newVersion/$channel/download?type=free")
 
         val to = File(Constants.UPDATE_DIRECTORY, PluginPortalBase.info.getJarName(newVersion))
-        val result = download(url, to, null, creds)
+        val result = download(url, to, null)
         return result != null
     }
 

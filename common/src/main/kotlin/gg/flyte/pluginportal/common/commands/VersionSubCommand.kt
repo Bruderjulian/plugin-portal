@@ -105,10 +105,7 @@ class VersionSubCommand {
                             .append(text("PluginPortal", WHITE))
                             .append(text("  |  ", DARK_GRAY))
                             .append(text("Premium: ", GRAY))
-                            .append(text(
-                                if (PluginPortalBase.info.hasPremiumEntitlement()) "Unlocked" else "Locked",
-                                if (PluginPortalBase.info.hasPremiumEntitlement()) GREEN else RED
-                            ))
+                            .append(text("Unlocked",GREEN))
                             .build()
                     )
                 )

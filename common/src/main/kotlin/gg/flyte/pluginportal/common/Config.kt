@@ -9,14 +9,12 @@ object Config {
     private lateinit var plugin: JavaPlugin
     private const val DISABLED_DOWNLOAD_PLATFORMS_PATH = "DownloadPlatforms.Disabled"
     private const val DISCORD_WEBHOOK_URL_PATH = "DiscordWebhook.Url"
-    private const val TELEMETRY_ENABLED_PATH = "Telemetry.Enabled"
     private val initialized get() = ::plugin.isInitialized
     
     fun init(plugin: JavaPlugin) {
         this.plugin = plugin
         plugin.saveDefaultConfig()
         initDiscordWebhook(plugin)
-        initPrivacyDefaults(plugin)
         initFeatures(plugin)
     }
 
@@ -25,17 +23,6 @@ object Config {
 
         plugin.config.set(DISCORD_WEBHOOK_URL_PATH, "")
         plugin.saveConfig()
-    }
-
-    private fun initPrivacyDefaults(plugin: JavaPlugin) {
-        var changed = false
-        val config = plugin.config
-
-        if (!config.contains(TELEMETRY_ENABLED_PATH)) {
-            config.set(TELEMETRY_ENABLED_PATH, true)
-            changed = true
-        }
-        if (changed) plugin.saveConfig()
     }
 
     private fun initFeatures(plugin: JavaPlugin) {
@@ -88,11 +75,8 @@ object Config {
         settings["DownloadPlatforms"] = mapOf(
             "Disabled" to getDisabledDownloadPlatforms().map(MarketplacePlatform::name)
         )
-        settings["Telemetry"] = mapOf(
-            "Enabled" to isTelemetryEnabled()
-        )
         
-        return settings
+        return settings;
     }
 
     /**
@@ -141,15 +125,6 @@ object Config {
                 return true
             }
 
-            if (path in setOf(
-                    TELEMETRY_ENABLED_PATH
-                ) && value is Boolean
-            ) {
-                plugin.config.set(path, value)
-                plugin.saveConfig()
-                return true
-            }
-
             // Special handling for Polymart token removal
             if (path == "Polymart.token" && value == null) {
                 // Remove the entire Polymart section if token is being cleared
@@ -189,13 +164,6 @@ object Config {
                 item is String && MarketplacePlatform.of(item) != null
             }
         }
-
-        if (path in setOf(
-                TELEMETRY_ENABLED_PATH
-            )
-        ) {
-            return value is Boolean
-        }
         
         // Validate other settings
         return path == "Polymart.token" && (value == null || value is String)
@@ -219,7 +187,6 @@ object Config {
     fun reload() {
         plugin.reloadConfig()
         initDiscordWebhook(plugin)
-        initPrivacyDefaults(plugin)
         initFeatures(plugin)
     }
 

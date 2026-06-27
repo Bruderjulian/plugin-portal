@@ -2,7 +2,6 @@ package gg.flyte.pluginportal.plugin.adapters
 
 import gg.flyte.pluginportal.common.API
 import gg.flyte.pluginportal.common.commands.lamp.Features
-import gg.flyte.pluginportal.plugin.MCLInfo
 import gg.flyte.pluginportal.plugin.PluginPortal
 import gg.flyte.pluginportal.plugin.adapters.platforms.github.GitHubAdapter
 import gg.flyte.pluginportal.plugin.adapters.platforms.modrinth.ModrinthAdapter

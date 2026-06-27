@@ -10,7 +10,6 @@ import gg.flyte.pluginportal.plugin.commands.ScanSubCommand
 import gg.flyte.pluginportal.plugin.commands.recognize.RecognizeSubCommand
 import gg.flyte.pluginportal.plugin.commands.recognize.RecognizeAllSubCommand
 import gg.flyte.pluginportal.plugin.commands.EditorSubCommand
-import gg.flyte.pluginportal.plugin.commands.lamp.RequiresAuthValidator
 import gg.flyte.pluginportal.plugin.commands.lamp.SafeFileNameValidator
 import gg.flyte.pluginportal.plugin.websocket.TypedSocketManager
 import org.bukkit.plugin.java.JavaPlugin
@@ -46,8 +45,7 @@ class PluginPortal : JavaPlugin() {
             ),
             commands
         ) {
-            it  .commandCondition(RequiresAuthValidator())
-                .parameterValidator(String::class.java, SafeFileNameValidator())
+            it.parameterValidator(String::class.java, SafeFileNameValidator())
         }
 
 

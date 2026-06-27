@@ -115,10 +115,8 @@ object PluginPortalBase {
             ViewSubCommand(),
             ListSubCommand(),
             DumpSubCommand(),
-            SupportSubCommand(),
             ConfigSubCommand(),
             VersionSubCommand(),
-            AuthSubCommand(), 
             UpgradeSubCommand(), // Self-Upgrade
             // Additional Commands
             *commands
