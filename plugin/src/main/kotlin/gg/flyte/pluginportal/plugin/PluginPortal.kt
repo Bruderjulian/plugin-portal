@@ -11,7 +11,6 @@ import gg.flyte.pluginportal.plugin.commands.recognize.RecognizeSubCommand
 import gg.flyte.pluginportal.plugin.commands.recognize.RecognizeAllSubCommand
 import gg.flyte.pluginportal.plugin.commands.EditorSubCommand
 import gg.flyte.pluginportal.plugin.commands.lamp.SafeFileNameValidator
-import gg.flyte.pluginportal.plugin.websocket.TypedSocketManager
 import org.bukkit.plugin.java.JavaPlugin
 import java.io.File
 
@@ -52,7 +51,6 @@ class PluginPortal : JavaPlugin() {
         AdapterPluginCache.load()
     }
     override fun onDisable() {
-        TypedSocketManager.stop()
         PluginPortalBase.onDisable()
     }
 

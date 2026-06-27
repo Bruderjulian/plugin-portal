@@ -296,90 +296,6 @@ object API {
         }.getOrNull()
     }
 
-    fun createEditorRoom(): EditorRoomResponse? {
-        val response = orpcCall("/premium/editor", body = "{}")
-
-        return if (response.isSuccessful()) {
-            try {
-                GSON.fromJson(response.body, EditorRoomResponse::class.java)
-            } catch (e: Exception) {
-                logParseFailure("Editor room creation", e)
-                null
-            }
-        } else {
-            logRequestFailure("Editor room creation", response, authSensitive = true)
-            null
-        }
-    }
-
-    fun createTemporaryServerLink(metadata: MCServerMetadata): TemporaryServerLinkResponse? {
-        val response = orpcCall("/servers/temp", body = GSON.toJson(mapOf("body" to metadata)))
-
-        return if (response.isSuccessful()) {
-            runCatching {
-                GSON.fromJson(response.body, TemporaryServerLinkResponse::class.java)
-            }.onFailure {
-                logParseFailure("Temporary server link creation", it)
-            }.getOrNull()
-        } else {
-            logRequestFailure("Temporary server link creation", response)
-            null
-        }
-    }
-
-    fun createDeviceCode(): DeviceCodeResponse? {
-        val url = "${HttpInfo.getApiBaseUrl()}/api/auth/device/code"
-        val body = GSON.toJson(mapOf("client_id" to "plugin-portal-server", "scope" to "server"))
-
-        return try {
-            val request = Request.Builder()
-                .url(url)
-                .post(body.toRequestBody("application/json".toMediaType()))
-                .build()
-
-            client.newCall(request).execute().use { response ->
-                if (!response.isSuccessful) return null
-                GSON.fromJson(response.body?.string() ?: "", DeviceCodeResponse::class.java)
-            }
-        } catch (e: Exception) {
-            logParseFailure("Device code creation", e)
-            null
-        }
-    }
-
-    fun pollDeviceToken(deviceCode: String): DeviceTokenResponse? {
-        val url = "${HttpInfo.getApiBaseUrl()}/api/auth/device/token"
-        val body = GSON.toJson(mapOf(
-            "grant_type" to "urn:ietf:params:oauth:grant-type:device_code",
-            "device_code" to deviceCode,
-            "client_id" to "plugin-portal-server"
-        ))
-
-        return try {
-            val request = Request.Builder()
-                .url(url)
-                .post(body.toRequestBody("application/json".toMediaType()))
-                .build()
-
-            client.newCall(request).execute().use { response ->
-                val responseBody = response.body?.string() ?: ""
-                if (!response.isSuccessful) return null
-                GSON.fromJson(responseBody, DeviceTokenResponse::class.java)
-            }
-        } catch (e: Exception) {
-            null
-        }
-    }
-
-    // Exception classes for backward compatibility
-    private class AuthorisationException(val statusCode: Int) : RuntimeException(
-        "The request was rejected by the remote server with status code $statusCode. You may need to authenticate."
-    )
-
-    private class PluginRequestFailedException(platform: MarketplacePlatform, id: String) : RuntimeException(
-        "An unexpected error occurred when attempting to retrieve plugin $id from $platform. " + 
-        "PLEASE REPORT THIS TO THE PLUGIN PORTAL AUTHORS"
-    )
 }
 
 // Data classes for backward compatibility (these should already exist in the types package)
@@ -399,45 +315,6 @@ data class LatestVersion(
     val channel: String,
     val downloadUrl: String,
     val changelog: String?
-)
-
-data class EditorRoomResponse(
-    val roomCode: String,
-    val pluginOTP: String,
-    val userOTP: String
-)
-
-data class MCServerMetadata(
-    val name: String,
-    val serverVersion: String? = null,
-    val minecraftVersion: String? = null,
-    val pluginVersion: String? = null,
-    val capabilities: List<String> = listOf("LIST", "INSTALL", "UPDATE", "DELETE", "SETTINGS")
-)
-
-data class TemporaryServerLinkResponse(
-    val code: String,
-    val pluginToken: String,
-    val browserToken: String,
-    val url: String,
-    val websocketUrl: String,
-    val expiresInSeconds: Int
-)
-
-data class DeviceCodeResponse(
-    val device_code: String,
-    val user_code: String,
-    val verification_uri: String,
-    val verification_uri_complete: String,
-    val expires_in: Int,
-    val interval: Int
-)
-
-data class DeviceTokenResponse(
-    val access_token: String,
-    val token_type: String,
-    val expires_in: Int,
-    val scope: String?
 )
 
 // Additional types for backward compatibility
