@@ -6,5 +6,5 @@ plugins {
 
 allprojects {
     group = "gg.flyte"
-    version = property("projectVersion") as String
+    version = "4.0"
 }

@@ -3,7 +3,7 @@
 
 [versions]
 kotlin = "2.1.21"
-shadow = "8.3.0"
+shadow = "9.4.3"
 spigot = "1.21.3-R0.1-SNAPSHOT"
 lamp = "4.0.0-rc.17"
 adventure = "4.24.0"

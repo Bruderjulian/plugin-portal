@@ -2,7 +2,6 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 
 plugins {
     id("pp.kotlin-library-conventions")
-    id("pp.test-conventions")
 }
 
 repositories {
@@ -22,7 +21,6 @@ dependencies {
     // Adventure API and platform dependencies
     api(libs.bundles.adventure)
 
-    implementation("org.bstats:bstats-bukkit:3.1.0")
     implementation("gs.mclo:api:4.0.3")
 
     implementation("com.google.guava:guava:33.2.1-jre")

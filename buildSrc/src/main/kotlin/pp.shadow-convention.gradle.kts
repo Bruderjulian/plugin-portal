@@ -5,25 +5,12 @@ plugins {
 
 tasks {
     shadowJar {
-        val channel: String? = project.findProperty("channel") as? String
-
-        val version = project.version as String
-        val name = "PluginPortal"
-        
-        // Add channel suffix if specified
-        val fullVersion = if (channel != null && channel != "stable") {
-            "$version-$channel"
-        } else {
-            version
-        }
-
         archiveClassifier.set("")
-        archiveFileName.set("$name-${fullVersion}.jar")
+        archiveFileName.set("PluginPortalForked.jar")
         destinationDirectory.set(file("$rootDir/out"))
 
         minimize()
         exclude("com/google/common/")
-        relocate("org.bstats", "gg.flyte.pluginportal.libs.bstats")
     }
 
     build {
